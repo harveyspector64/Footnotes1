@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* ========== 0  CORE THEME  ======================================== */
+/* ---------- 0  CORE THEME ---------------------------------------- */
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#0c0c0d;--panel:#111;--card:#171719;--stroke:#2a2a2d;
@@ -22,13 +22,13 @@ body::before{content:"";position:fixed;inset:0;
   background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQImWNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=") repeat;
   mix-blend-mode:overlay;opacity:.06;pointer-events:none;z-index:1}
 
-/* ========== 1  HEADER  =========================================== */
+/* ---------- 1  HEADER -------------------------------------------- */
 header{position:fixed;inset:0 0 auto 0;height:var(--headerH);
   display:flex;align-items:center;justify-content:space-between;
   padding:.65rem 1rem;background:#0008;backdrop-filter:blur(6px);
   border-bottom:1px solid var(--stroke);z-index:1000}
-h1{font-size:.9rem;letter-spacing:2px;color:var(--accent)}
-nav#filters{display:flex;gap:1rem;position:relative}
+h1{font-size:.9rem;letter-spacing:2px;color:var(--accent);cursor:pointer}
+nav#filters{display:flex;gap:1rem;position:relative;flex-wrap:nowrap;white-space:nowrap;overflow-x:auto}
 nav#filters button{background:none;border:none;color:var(--txt);font-weight:600;letter-spacing:1px;cursor:pointer}
 nav#filters button.active{color:var(--accent)}
 nav#filters::after{content:"";position:absolute;height:2px;background:var(--accent);bottom:-5px;left:0;
@@ -39,49 +39,44 @@ nav#filters::after{content:"";position:absolute;height:2px;background:var(--acce
   font-size:.8rem;cursor:pointer;padding:.1rem .4rem}
 #closeTop{display:none;font-size:1.05rem}
 
-/* ========== 2  GRID  ============================================= */
+/* hide filter row on very narrow screens so it never overlaps logo */
+@media(max-width:640px){nav#filters{display:none}}
+
+/* ---------- 2  GRID ---------------------------------------------- */
 main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 .container{max-width:1440px;margin:0 auto}
-.grid{                               /* desktop masonry with CSS grid */
+.grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
   grid-auto-rows:8px;
   gap:20px 12px;
 }
-.card{
-  position:relative;background:var(--card);border:1px solid var(--stroke);overflow:hidden;
-  transition:box-shadow .3s;
-}
+.card{position:relative;background:var(--card);border:1px solid var(--stroke);overflow:hidden;transition:.3s box-shadow}
 .card:hover{box-shadow:0 6px 12px #0008}
 .card img,.card video{width:100%;height:auto;display:block;background:#000}
 .card.feat::before{content:"";position:absolute;inset:0 0 0 -4px;width:4px;background:var(--accent)}
-.card.error{display:flex;align-items:center;justify-content:center;font-size:.8rem;text-align:center;
-  color:var(--muted);border:1px dashed var(--accent)}
+.card.error{display:flex;align-items:center;justify-content:center;text-align:center;font-size:.8rem;color:var(--muted);
+  border:1px dashed var(--accent)}
 .meta{display:none}
 
-/* ---------- mobile masonry with CSS columns (works on iOS) -------- */
+/* mobile 2-column masonry via CSS columns */
 @media(max-width:640px){
-  .grid{
-    display:block;column-count:2;column-gap:12px;      /* 2 columns */
-  }
-  .card{
-    display:inline-block;width:100%;margin:0 0 20px;
-    break-inside:avoid;break-inside:avoid-column;
-  }
+  .grid{display:block;column-count:2;column-gap:12px}
+  .card{display:inline-block;width:100%;margin:0 0 20px;break-inside:avoid-column}
 }
 
-/* ========== 3  SIDE PANEL  ======================================= */
+/* ---------- 3  SIDE-PANEL ---------------------------------------- */
 #panel{position:fixed;top:0;right:-100%;height:100%;width:34%;min-width:320px;background:var(--panel);
   box-shadow:-6px 0 20px #000a;overflow-y:auto;transition:right .6s ease;z-index:999}
 #panel.open{right:0}
-#panel header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.3rem;
-  border-bottom:1px solid var(--stroke)}
+#panel header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 1.3rem;border-bottom:1px solid var(--stroke);position:sticky;top:0;background:var(--panel)}
 #panel h2{font-size:1rem;color:var(--accent)}
 .close{background:none;border:none;font-size:1.3rem;color:var(--txt);cursor:pointer}
 .body{padding:calc(var(--headerH) + 1rem) 1.4rem 3rem}
 .body img,.body video{
   max-width:100%;max-height:calc(100vh - var(--headerH) - 4rem);
-  width:100%;height:auto;border:1px solid var(--stroke);object-fit:contain;margin-bottom:1rem}
+  width:100%;height:auto;object-fit:contain;border:1px solid var(--stroke);margin-bottom:1rem}
 @media(max-width:680px){#panel{width:100%}}
 
 #overlay{position:fixed;inset:0;z-index:998;background:transparent;display:none}
@@ -93,13 +88,13 @@ main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 <body>
 
 <header>
-  <h1>FOC • ARCHIVE</h1>
+  <h1 id="homeLink">FOC • ARCHIVE</h1>
 
   <nav id="filters">
-    <button data-filter="all" class="active">all</button>
+    <button data-filter="all"  class="active">all</button>
     <button data-filter="vision">vision</button>
     <button data-filter="text">text</button>
-    <button data-filter="promo">promo</button>
+    <button data-filter="voices">voices</button>
   </nav>
 
   <div style="display:flex;align-items:center;gap:.6rem">
@@ -111,117 +106,104 @@ main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 
 <main><div class="container"><section id="grid" class="grid"></section></div></main>
 
-<!-- side-panel -->
 <aside id="panel" aria-hidden="true">
   <header><h2 id="pTitle">title</h2><button class="close" aria-label="close">&times;</button></header>
   <div id="pBody" class="body"></div>
 </aside>
 
-<!-- click-anywhere overlay -->
 <div id="overlay" aria-hidden="true"></div>
 
 <script type="module">
-/* ---------- helpers & state -------------------------------------- */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const state={arts:[],activeTag:"all",currentId:null};
 
-/* ---------- load data & build grid ------------------------------- */
+/* ---------- 1  DATA LOAD ----------------------------------------- */
 (async()=>{
   state.arts=await fetch('./artefacts.json').then(r=>r.json());
   await buildGrid(); applyQS();
 })();
 
-/* preload intrinsic dims */
+/* ---------- 2  BUILD GRID  --------------------------------------- */
 function probe(a){
   return new Promise(ok=>{
     if(a.image){
-      const img=new Image();
-      img.onload=()=>{a.w=img.naturalWidth;a.h=img.naturalHeight;a.r=a.w/a.h;ok(a)};
-      img.onerror=()=>{a.error=true;ok(a)};
-      img.src=a.image;
+      const i=new Image();
+      i.onload=()=>{a.w=i.naturalWidth;a.h=i.naturalHeight;a.r=a.w/a.h;ok(a)};
+      i.onerror=()=>{a.error=true;ok(a)};
+      i.src=a.image;
     }else{a.w=16;a.h=9;a.r=16/9;ok(a);}
   });
 }
-
-/* build grid */
 async function buildGrid(){
-  const grid=$('#grid');grid.innerHTML='';
+  const g=$('#grid');g.innerHTML='';
   const arts=await Promise.all(state.arts.map(probe));
 
   arts.forEach(a=>{
     const c=document.createElement('article');c.className='card';c.dataset.id=a.id;
     if(a.feat)c.classList.add('feat');
 
-    /* Masonry spans (desktop only) */
-    if(window.innerWidth>640 && !a.error){
+    if(innerWidth>640&&!a.error){
       const col=a.r>1.8?2:a.r<.7?2:1;
       const row=Math.round((a.h/a.w)*col*20);
       c.style.gridColumn=`span ${col}`;c.style.gridRow=`span ${row}`;
     }
 
-    /* media */
-    let media;
+    let m;
     if(a.error){
-      c.classList.add('error');c.textContent=`Missing asset:\n${a.image||a.video}`;
-    }else if(a.video && !a.image){
-      media=document.createElement('video');
-      Object.assign(media,{src:a.video,autoplay:true,loop:true,muted:true,playsInline:true,loading:'lazy'});
+      c.classList.add('error');c.textContent=`Missing:\n${a.image||a.video}`;
+    }else if(a.video&&!a.image){
+      m=document.createElement('video');
+      Object.assign(m,{src:a.video,autoplay:true,loop:true,muted:true,playsInline:true,loading:'lazy'});
     }else{
-      media=document.createElement('img');media.src=a.image;media.loading='lazy';
+      m=document.createElement('img');m.src=a.image;m.loading='lazy';
       if(a.video){
-        const hov=document.createElement('video');
-        Object.assign(hov,{src:a.video,autoplay:true,loop:true,muted:true,playsInline:true});
-        hov.style.cssText='position:absolute;inset:0;opacity:0;transition:.3s';
-        c.onpointerenter=()=>hov.style.opacity=1;c.onpointerleave=()=>hov.style.opacity=0;
-        c.append(hov);
+        const h=document.createElement('video');
+        Object.assign(h,{src:a.video,autoplay:true,loop:true,muted:true,playsInline:true});
+        h.style.cssText='position:absolute;inset:0;opacity:0;transition:.3s';
+        c.onpointerenter=()=>h.style.opacity=1;c.onpointerleave=()=>h.style.opacity=0;
+        c.append(h);
       }
     }
-    if(media)c.append(media);
+    if(m)c.append(m);
     c.insertAdjacentHTML('beforeend',`<div class="meta"><h3>${a.title}</h3></div>`);
     c.onclick=()=>openPanel(a);
-    grid.append(c);
+    g.append(c);
   });
 }
 
-/* underline */
-function underline(btn){
-  const nav=btn.parentElement,r=btn.getBoundingClientRect(),nr=nav.getBoundingClientRect();
-  nav.style.setProperty('--uw',`${r.width}px`);nav.style.setProperty('--ux',`${r.left-nr.left}px`);
+/* ---------- 3  FILTER / SEARCH / SHUFFLE ------------------------- */
+function underline(b){
+  const n=b.parentElement,r=b.getBoundingClientRect(),nr=n.getBoundingClientRect();
+  n.style.setProperty('--uw',`${r.width}px`);n.style.setProperty('--ux',`${r.left-nr.left}px`);
 }
 $('#filters').onclick=e=>{
   if(e.target.tagName!=='BUTTON')return;
   const tag=e.target.dataset.filter;state.activeTag=tag;
   $$('#grid .card').forEach(card=>{
-    const art=state.arts.find(x=>x.id===card.dataset.id);
-    const show=tag==='all'||(art.tags||[]).includes(tag);
-    card.style.display=show?'block':'none';
+    const a=state.arts.find(x=>x.id===card.dataset.id);
+    card.style.display=tag==='all'||(a.tags||[]).includes(tag)?'block':'none';
   });
   $$('#filters button').forEach(b=>b.classList.toggle('active',b===e.target));underline(e.target);
 };
-
-/* search */
 $('#search').oninput=e=>{
   const q=e.target.value.toLowerCase();
   $$('#grid .card').forEach(card=>{
-    const art=state.arts.find(x=>x.id===card.dataset.id);
-    card.style.display=art.title.toLowerCase().includes(q)?'block':'none';
+    const a=state.arts.find(x=>x.id===card.dataset.id);
+    card.style.display=a.title.toLowerCase().includes(q)?'block':'none';
   });
 };
-
-/* shuffle */
 $('#shuffle').onclick=()=>{
-  const vis=$$('#grid .card').filter(c=>c.style.display!=='none');
-  if(vis.length)vis[Math.random()*vis.length|0].click();
+  const v=$$('#grid .card').filter(c=>c.style.display!=='none');
+  if(v.length)v[Math.random()*v.length|0].click();
 };
 
-/* panel */
+/* ---------- 4  PANEL & OVERLAY ----------------------------------- */
 const panel=$('#panel'),pTitle=$('#pTitle'),pBody=$('#pBody'),ov=$('#overlay'),closeTop=$('#closeTop');
 function openPanel(a){
   state.currentId=a.id;
   pTitle.textContent=a.title;
-  pBody.innerHTML=a.video
-    ? `<video src="${a.video}" controls></video>`
-    : `<img src="${a.image}" alt="">`;
+  pBody.innerHTML=a.video?`<video src="${a.video}" controls></video>`:`<img src="${a.image}" alt="">`;
+  pBody.onclick=closePanel;                         /* tap image to close */
   panel.classList.add('open');panel.setAttribute('aria-hidden','false');
   ov.classList.add('show');closeTop.style.display='block';
   history.replaceState({},'',`?id=${a.id}`);
@@ -233,21 +215,24 @@ function closePanel(){
 }
 $('.close').onclick=closePanel;closeTop.onclick=closePanel;ov.onclick=closePanel;
 
-/* deep-link & keys */
+/* ---------- 5  DEEP-LINK & KEYS ---------------------------------- */
 function applyQS(){
   const u=new URL(location),id=u.searchParams.get('id'),tag=u.searchParams.get('tag');
   if(tag)$('#filters button[data-filter="'+tag+'"]').click();
-  if(id){const art=state.arts.find(x=>x.id===id);art&&openPanel(art);}
+  if(id){const a=state.arts.find(x=>x.id===id);a&&openPanel(a);}
 }
 document.addEventListener('keydown',e=>{
   if(panel.classList.contains('open')){
-    const vis=state.arts.filter(x=>state.activeTag==='all'||(x.tags||[]).includes(state.activeTag));
-    const i=vis.findIndex(x=>x.id===state.currentId);
-    if(e.key==='ArrowRight'&&vis[i+1])return openPanel(vis[i+1]);
-    if(e.key==='ArrowLeft' &&vis[i-1])return openPanel(vis[i-1]);
+    const v=state.arts.filter(x=>state.activeTag==='all'||(x.tags||[]).includes(state.activeTag));
+    const i=v.findIndex(x=>x.id===state.currentId);
+    if(e.key==='ArrowRight'&&v[i+1])return openPanel(v[i+1]);
+    if(e.key==='ArrowLeft' &&v[i-1])return openPanel(v[i-1]);
     if(e.key==='Escape')return closePanel();
   }else if(e.key==='s'||e.key==='S')$('#shuffle').click();
 });
+
+/* ---------- 6  HOME-LINK CLOSE & SCROLL TOP ---------------------- */
+$('#homeLink').onclick=()=>{closePanel();scrollTo({top:0,behavior:'smooth'})};
 </script>
 </body>
 </html>
