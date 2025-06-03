@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Footnotes of Creation • Archive</title>
 
-<link rel="preconnect" href="https://fonts.gstatic.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* ---------- 1. ROOT & RESET -------------------------------------- */
+/* ========== 0  CORE THEME  ======================================== */
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#0c0c0d;--panel:#111;--card:#171719;--stroke:#2a2a2d;
@@ -21,12 +21,12 @@ html,body{height:100%;background:var(--bg);color:var(--txt);scroll-behavior:smoo
 body::before{content:"";position:fixed;inset:0;
   background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQImWNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=") repeat;
   mix-blend-mode:overlay;opacity:.06;pointer-events:none;z-index:1}
-  /* hide the title caption under every grid card */
-.meta{display:none!important}
 
-/* ---------- 2. HEADER -------------------------------------------- */
-header{position:fixed;inset:0 0 auto 0;height:var(--headerH);display:flex;align-items:center;justify-content:space-between;
-  padding:.65rem 1rem;background:#0008;backdrop-filter:blur(6px);border-bottom:1px solid var(--stroke);z-index:1000}
+/* ========== 1  HEADER  =========================================== */
+header{position:fixed;inset:0 0 auto 0;height:var(--headerH);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 1rem;background:#0008;backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--stroke);z-index:1000}
 h1{font-size:.9rem;letter-spacing:2px;color:var(--accent)}
 nav#filters{display:flex;gap:1rem;position:relative}
 nav#filters button{background:none;border:none;color:var(--txt);font-weight:600;letter-spacing:1px;cursor:pointer}
@@ -35,16 +35,17 @@ nav#filters::after{content:"";position:absolute;height:2px;background:var(--acce
   width:var(--uw,0);transform:translateX(var(--ux,0));transition:.3s}
 #search{padding:.15rem .4rem;background:transparent;border:1px solid var(--stroke);color:var(--txt);width:170px}
 #search:focus{outline:none;border-color:var(--accent)}
-#shuffle,#closeTop{background:none;border:1px solid var(--accent);color:var(--accent);font-size:.8rem;cursor:pointer;padding:.1rem .4rem}
+#shuffle,#closeTop{background:none;border:1px solid var(--accent);color:var(--accent);
+  font-size:.8rem;cursor:pointer;padding:.1rem .4rem}
 #closeTop{display:none;font-size:1.05rem}
 
-/* ---------- 3. GRID ---------------------------------------------- */
+/* ========== 2  GRID  ============================================= */
 main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 .container{max-width:1440px;margin:0 auto}
-.grid{
+.grid{                               /* desktop masonry with CSS grid */
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  grid-auto-rows:8px;             /* masonry unit */
+  grid-auto-rows:8px;
   gap:20px 12px;
 }
 .card{
@@ -54,16 +55,22 @@ main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 .card:hover{box-shadow:0 6px 12px #0008}
 .card img,.card video{width:100%;height:auto;display:block;background:#000}
 .card.feat::before{content:"";position:absolute;inset:0 0 0 -4px;width:4px;background:var(--accent)}
-.meta{padding:.6rem .8rem 1rem}.meta h3{font-size:1rem;font-weight:600;line-height:1.2}
-.card.error{display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--muted);text-align:center;border:1px dashed var(--accent)}
+.card.error{display:flex;align-items:center;justify-content:center;font-size:.8rem;text-align:center;
+  color:var(--muted);border:1px dashed var(--accent)}
+.meta{display:none}
 
-/* Mobile: single column, natural heights */
+/* ---------- mobile masonry with CSS columns (works on iOS) -------- */
 @media(max-width:640px){
-  .grid{grid-template-columns:1fr;grid-auto-rows:auto}
-  .card{grid-column:span 1 !important;grid-row:auto !important}
+  .grid{
+    display:block;column-count:2;column-gap:12px;      /* 2 columns */
+  }
+  .card{
+    display:inline-block;width:100%;margin:0 0 20px;
+    break-inside:avoid;break-inside:avoid-column;
+  }
 }
 
-/* ---------- 4. SIDE PANEL ---------------------------------------- */
+/* ========== 3  SIDE PANEL  ======================================= */
 #panel{position:fixed;top:0;right:-100%;height:100%;width:34%;min-width:320px;background:var(--panel);
   box-shadow:-6px 0 20px #000a;overflow-y:auto;transition:right .6s ease;z-index:999}
 #panel.open{right:0}
@@ -72,11 +79,14 @@ main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 #panel h2{font-size:1rem;color:var(--accent)}
 .close{background:none;border:none;font-size:1.3rem;color:var(--txt);cursor:pointer}
 .body{padding:calc(var(--headerH) + 1rem) 1.4rem 3rem}
-.body img,.body video,.body iframe{
-  width:100%;height:auto;object-fit:contain;
-  max-height:calc(100vh - var(--headerH) - 4rem);
-  border:1px solid var(--stroke);margin-bottom:1rem}
+.body img,.body video{
+  max-width:100%;max-height:calc(100vh - var(--headerH) - 4rem);
+  width:100%;height:auto;border:1px solid var(--stroke);object-fit:contain;margin-bottom:1rem}
 @media(max-width:680px){#panel{width:100%}}
+
+#overlay{position:fixed;inset:0;z-index:998;background:transparent;display:none}
+#overlay.show{display:block}
+
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--stroke);border-radius:3px}
 </style>
 </head>
@@ -101,25 +111,27 @@ main{padding:calc(var(--headerH) + 1rem) 2vw 3rem}
 
 <main><div class="container"><section id="grid" class="grid"></section></div></main>
 
+<!-- side-panel -->
 <aside id="panel" aria-hidden="true">
   <header><h2 id="pTitle">title</h2><button class="close" aria-label="close">&times;</button></header>
   <div id="pBody" class="body"></div>
 </aside>
+
+<!-- click-anywhere overlay -->
+<div id="overlay" aria-hidden="true"></div>
 
 <script type="module">
 /* ---------- helpers & state -------------------------------------- */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const state={arts:[],activeTag:"all",currentId:null};
 
-/* ---------- load JSON & build grid ------------------------------- */
+/* ---------- load data & build grid ------------------------------- */
 (async()=>{
-  const json=await fetch('./artefacts.json').then(r=>r.json());
-  state.arts=json;
-  await buildGrid();
-  applyQS();
+  state.arts=await fetch('./artefacts.json').then(r=>r.json());
+  await buildGrid(); applyQS();
 })();
 
-/* ---------- load intrinsic dimensions --------------------------- */
+/* preload intrinsic dims */
 function probe(a){
   return new Promise(ok=>{
     if(a.image){
@@ -131,7 +143,7 @@ function probe(a){
   });
 }
 
-/* ---------- build masonry grid ---------------------------------- */
+/* build grid */
 async function buildGrid(){
   const grid=$('#grid');grid.innerHTML='';
   const arts=await Promise.all(state.arts.map(probe));
@@ -140,17 +152,17 @@ async function buildGrid(){
     const c=document.createElement('article');c.className='card';c.dataset.id=a.id;
     if(a.feat)c.classList.add('feat');
 
-    /* calculate spans only on desktop */
+    /* Masonry spans (desktop only) */
     if(window.innerWidth>640 && !a.error){
       const col=a.r>1.8?2:a.r<.7?2:1;
       const row=Math.round((a.h/a.w)*col*20);
       c.style.gridColumn=`span ${col}`;c.style.gridRow=`span ${row}`;
     }
 
+    /* media */
     let media;
     if(a.error){
-      c.classList.add('error');
-      c.textContent=`Missing:\n${a.image||a.video}`;
+      c.classList.add('error');c.textContent=`Missing asset:\n${a.image||a.video}`;
     }else if(a.video && !a.image){
       media=document.createElement('video');
       Object.assign(media,{src:a.video,autoplay:true,loop:true,muted:true,playsInline:true,loading:'lazy'});
@@ -171,7 +183,7 @@ async function buildGrid(){
   });
 }
 
-/* ---------- underline filter ------------------------------------ */
+/* underline */
 function underline(btn){
   const nav=btn.parentElement,r=btn.getBoundingClientRect(),nr=nav.getBoundingClientRect();
   nav.style.setProperty('--uw',`${r.width}px`);nav.style.setProperty('--ux',`${r.left-nr.left}px`);
@@ -187,7 +199,7 @@ $('#filters').onclick=e=>{
   $$('#filters button').forEach(b=>b.classList.toggle('active',b===e.target));underline(e.target);
 };
 
-/* ---------- search ---------------------------------------------- */
+/* search */
 $('#search').oninput=e=>{
   const q=e.target.value.toLowerCase();
   $$('#grid .card').forEach(card=>{
@@ -196,14 +208,14 @@ $('#search').oninput=e=>{
   });
 };
 
-/* ---------- shuffle --------------------------------------------- */
+/* shuffle */
 $('#shuffle').onclick=()=>{
   const vis=$$('#grid .card').filter(c=>c.style.display!=='none');
   if(vis.length)vis[Math.random()*vis.length|0].click();
 };
 
-/* ---------- panel ------------------------------------------------ */
-const panel=$('#panel'),pTitle=$('#pTitle'),pBody=$('#pBody'),closeTop=$('#closeTop');
+/* panel */
+const panel=$('#panel'),pTitle=$('#pTitle'),pBody=$('#pBody'),ov=$('#overlay'),closeTop=$('#closeTop');
 function openPanel(a){
   state.currentId=a.id;
   pTitle.textContent=a.title;
@@ -211,15 +223,19 @@ function openPanel(a){
     ? `<video src="${a.video}" controls></video>`
     : `<img src="${a.image}" alt="">`;
   panel.classList.add('open');panel.setAttribute('aria-hidden','false');
-  closeTop.style.display='block';
+  ov.classList.add('show');closeTop.style.display='block';
   history.replaceState({},'',`?id=${a.id}`);
 }
-function closePanel(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');closeTop.style.display='none';history.replaceState({},'',' ');}
-$('.close').onclick=closePanel;closeTop.onclick=closePanel;
+function closePanel(){
+  panel.classList.remove('open');panel.setAttribute('aria-hidden','true');
+  ov.classList.remove('show');closeTop.style.display='none';
+  history.replaceState({},'',' ');
+}
+$('.close').onclick=closePanel;closeTop.onclick=closePanel;ov.onclick=closePanel;
 
-/* ---------- deep-links & keys ----------------------------------- */
+/* deep-link & keys */
 function applyQS(){
-  const url=new URL(location),id=url.searchParams.get('id'),tag=url.searchParams.get('tag');
+  const u=new URL(location),id=u.searchParams.get('id'),tag=u.searchParams.get('tag');
   if(tag)$('#filters button[data-filter="'+tag+'"]').click();
   if(id){const art=state.arts.find(x=>x.id===id);art&&openPanel(art);}
 }
