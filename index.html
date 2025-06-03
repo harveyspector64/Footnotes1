@@ -21,6 +21,8 @@ html,body{height:100%;background:var(--bg);color:var(--txt);scroll-behavior:smoo
 body::before{content:"";position:fixed;inset:0;
   background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQImWNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=") repeat;
   mix-blend-mode:overlay;opacity:.06;pointer-events:none;z-index:1}
+  /* hide the title caption under every grid card */
+.meta{display:none!important}
 
 /* ---------- 2. HEADER -------------------------------------------- */
 header{position:fixed;inset:0 0 auto 0;height:var(--headerH);display:flex;align-items:center;justify-content:space-between;
